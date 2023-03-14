@@ -19,9 +19,11 @@ jobs:
       - name: Check gentxs directory
         run: |
           for file in sge-testnet-1/gentxs/*.json; do
-          sge-testnet-1/gentxs | jq -r '.[].name'); do
             NAME=$(echo $file | cut -f 1 -d '.')
             STAKED=$(jq -r '.body.messages[0].value.amount' "$file")
             # Perform checks on $NAME and $STAKED here
-          echo "$NAME has $STAKED tokens staked"
+            echo "$NAME has $STAKED tokens staked"
           done
+
+
+          
