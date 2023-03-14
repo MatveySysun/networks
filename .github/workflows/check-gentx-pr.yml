@@ -18,8 +18,8 @@ jobs:
         run: |
           ls -la
           git status
-          git diff --name-status --diff-filter=AD HEAD^ HEAD -- sge-testnet-1/gentxs/
-          if git diff --name-status --diff-filter=AD HEAD^ HEAD | grep -q "^A\|D.*sge-testnet-1/gentxs/"; then
+          git diff --name-status --diff-filter=AD collect-gentx^ collect-gentx -- sge-testnet-1/gentxs/
+          if git diff --name-status --diff-filter=AD collect-gentx^ collect-gentx -- sge-testnet-1/gentxs/ | grep -q "^A\|D"; then
               echo "There are new or deleted files in gentxs directory"
               echo "FILES_ADDED=true" >> $GITHUB_ENV
           else
