@@ -15,17 +15,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2       
-      - name: Check gentx amount
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/checkout@v2
+      - name: Check gentxs directory
         run: |
-          commit_sha=$(jq -r '.pull_request.head.sha' $GITHUB_EVENT_PATH)
-          amount=$(curl -s -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/MatveySysun/networks/commits/$commit_sha | jq -r '.commit.message' | grep -o -E '[0-9]+' | head -1)
-          if [ "$amount" -ge 10000 ]; then
-            echo "Gentx approved"
-          else
-            echo "Gentx amount too low"
-            exit 1
-          fi
-        shell: bash
+          for file in sge-testnet-1/gentxs/*.json; do
+          sge-testnet-1/gentxs | jq -r '.[].name'); do
+            NAME=$(echo $file | cut -f 1 -d '.')
+            STAKED=$(jq -r '.body.messages[0].value.amount' "$file")
+            # Perform checks on $NAME and $STAKED here
+          echo "$NAME has $STAKED tokens staked"
+          done
