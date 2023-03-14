@@ -21,6 +21,7 @@ jobs:
       id: check-files
       run: |
         ls -la
+        cd sge-testnet-1/gentxs
         if ! git diff --name-only "$(git rev-parse HEAD^)" HEAD | grep -q "^sge-testnet-1/gentxs"; then
           echo "No files added to gentxs directory"
           echo "FILES_ADDED=false" >> $GITHUB_ENV
