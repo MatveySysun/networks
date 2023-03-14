@@ -21,7 +21,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           commit_sha=$(jq -r '.pull_request.head.sha' $GITHUB_EVENT_PATH)
-          amount=$(curl -s -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/<owner>/<repo>/commits/$commit_sha | jq -r '.commit.message' | grep -o -E '[0-9]+' | head -1)
+          amount=$(curl -s -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/MatveySysun/networks/commits/$commit_sha | jq -r '.commit.message' | grep -o -E '[0-9]+' | head -1)
           if [ "$amount" -ge 10000 ]; then
             echo "Gentx approved"
           else
