@@ -16,6 +16,9 @@ jobs:
         uses: actions/checkout@v2       
       - name: Check if files added to sge-testnet-1/gentxs directory
         run: |
+          ls -la
+          git status
+          git diff --name-status --diff-filter=AD HEAD^ HEAD -- sge-testnet-1/gentxs/
           if git diff --name-status --diff-filter=AD HEAD^ HEAD | grep -q "^A\|D.*sge-testnet-1/gentxs/"; then
               echo "There are new or deleted files in gentxs directory"
               echo "FILES_ADDED=true" >> $GITHUB_ENV
