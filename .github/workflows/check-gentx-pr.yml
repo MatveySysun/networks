@@ -16,12 +16,12 @@ jobs:
         uses: actions/checkout@v2       
       - name: Check if files added to sge-testnet-1/gentxs directory
         run: |
-          if [[ $(git diff --name-only collect-gentx^ HEAD) == *"sge-testnet-1/gentxs/"* ]]; then
-            echo "Files added to sge-testnet-1/gentxs directory"
-            echo "FILES_ADDED=true" >> $GITHUB_ENV
+          if git diff --name-status --diff-filter=AD HEAD^ HEAD | grep -q "^A\|D.*sge-testnet-1/gentxs/"; then
+              echo "There are new or deleted files in gentxs directory"
+              echo "FILES_ADDED=true" >> $GITHUB_ENV
           else
-            echo "No files added to sge-testnet-1/gentxs directory"
-            echo "FILES_ADDED=false" >> $GITHUB_ENV
+              echo "There are no new or deleted files in gentxs directory"
+              echo "FILES_ADDED=false" >> $GITHUB_ENV
           fi
       - name: Check gentx amount
         if: env.FILES_ADDED == 'true'
