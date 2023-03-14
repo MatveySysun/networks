@@ -1,0 +1,39 @@
+name: Check gentx PR
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+      - collect-gentx
+
+jobs:
+  check-gentx:
+    runs-on: ubuntu-latest
+    env:
+      CHAIN_ID: sge-testnet-1
+    steps:
+    - name: Check if gentx files added
+      id: check-files
+      run: |
+        if ! git diff --name-only HEAD^ HEAD | grep -q "^networks/$CHAIN_ID/gentxs"; then
+          echo "No files added to gentxs directory"
+          echo "FILES_ADDED=false" >> $GITHUB_ENV
+        else
+          echo "Files added to gentxs directory"
+          echo "FILES_ADDED=true" >> $GITHUB_ENV
+        fi
+      shell: bash
+    - name: Check gentx amount
+      if: env.FILES_ADDED == 'true'
+      run: |
+        amount=$(jq -r '.body.messages[0].value.amount' $GITHUB_EVENT_PATH)
+        if [ "$amount" -ge 10000 ]; then
+          echo "Gentx approved"
+        else
+          echo "Gentx amount too low"
+          exit 1
+        fi
+      shell: bash
