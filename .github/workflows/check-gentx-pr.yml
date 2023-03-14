@@ -14,20 +14,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2       
-      - name: Check if files added to sge-testnet-1/gentxs directory
-        run: |
-          ls -la
-          git status
-          git diff --name-status --diff-filter=AD collect-gentx^ collect-gentx -- sge-testnet-1/gentxs/
-          if git diff --name-status --diff-filter=AD collect-gentx^ collect-gentx -- sge-testnet-1/gentxs/ | grep -q "^A\|D"; then
-              echo "There are new or deleted files in gentxs directory"
-              echo "FILES_ADDED=true" >> $GITHUB_ENV
-          else
-              echo "There are no new or deleted files in gentxs directory"
-              echo "FILES_ADDED=false" >> $GITHUB_ENV
-          fi
       - name: Check gentx amount
-        if: env.FILES_ADDED == 'true'
         run: |
           amount=$(jq -r '.body.messages[0].value.amount' $GITHUB_EVENT_PATH)
           if [ "$amount" -ge 10000 ]; then
