@@ -1,17 +1,16 @@
-name: Check for new files in sge-testnet-1/gentxs directory
+name: Check new gentxs according to the criteria
 
 on:
-  push:
-    # We want to trigger this workflow when a file is pushed to sge-testnet-1/gentxs directory
+#   push:
     # paths:
     #  - 'sge-testnet-1/gentxs/**'
   pull_request:
-    # We also want to trigger this workflow when a pull request is opened with changes to the sge-testnet-1/gentxs directory
     paths:
       - 'sge-testnet-1/gentxs/**'
 
 env:
-  MIN_STAKE: 50000
+  MIN_STAKE: 10000000000
+  
 
 jobs:
   check-gentxs-directory:
@@ -21,7 +20,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.head_ref }}
-      - name: Check gentxs directory
+      - name: Check gentx amount
         run: |
           for file in sge-testnet-1/gentxs/*.json; do
             NAME=$(echo $file | cut -f 1 -d '.')
@@ -36,3 +35,24 @@ jobs:
             fi
           done
 
+
+          ## Loop through each validator and check if it meets the criteria
+          #for V in $(echo "$VALIDATORS" | jq -c '.validators[]'); do
+          #  STAKED=$(echo "$V" | jq -r '.tokens')
+          #  NAME=$(echo "$V" | jq -r '.description.moniker')
+          #  COMMISSION_TIME=$(echo "$V" | jq -r '.commission.update_time')
+
+          #  echo "$NAME has $STAKED tokens staked and last updated commission on $COMMISSION_TIME"
+
+          #  COMMISSION_UNIX_TIME=$(date -d $COMMISSION_TIME +%s)
+          #  TX_UNIX_TIME=$(date -d @$TX_TIME +%s)
+
+          #  if [[ $STAKED -ge $MIN_STAKE ]] && [[ $COMMISSION_UNIX_TIME -ge $TX_UNIX_TIME ]]; then
+          #    echo "Validator $NAME meets the criteria."
+          #  else
+          #    echo "Validator $NAME does not meet the criteria."
+          #    exit 1
+          #  fi
+          #done
+
+          #echo "All validators meet the criteria."
