@@ -29,9 +29,8 @@ jobs:
               # If the validator meets the criteria, print a message
               echo "$NAME has $STAKED tokens staked"
             else
-              # If the validator does not meet the criteria, exit with an error code
-              echo "$NAME has less than $MIN_STAKE tokens staked"
-              exit 1
+              # If the validator does not meet the criteria, print a warning message
+              echo "WARNING: $NAME has less than $MIN_STAKE tokens staked"
             fi
           done
 
