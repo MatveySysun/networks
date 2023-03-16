@@ -10,6 +10,9 @@ on:
     paths:
       - 'sge-testnet-1/gentxs/**'
 
+env:
+  MIN_STAKE: 50000
+
 jobs:
   check-gentxs-directory:
     runs-on: ubuntu-latest
@@ -23,10 +26,13 @@ jobs:
           for file in sge-testnet-1/gentxs/*.json; do
             NAME=$(echo $file | cut -f 1 -d '.')
             STAKED=$(jq -r '.body.messages[0].value.amount' "$file")
-            # Perform checks on $NAME and $STAKED here
-            echo "$NAME has $STAKED tokens staked"
             if [[ $STAKED -ge $MIN_STAKE ]]; then
-              # If the validator meets the criteria, download its gentx file
-              wget https://raw.githubusercontent.com/MatveySysun/networks/master/$CHAIN_ID/gentxs/$file -O $NAME-gentx.json
+              # If the validator meets the criteria, print a message
+              echo "$NAME has $STAKED tokens staked"
+            else
+              # If the validator does not meet the criteria, exit with an error code
+              echo "$NAME has less than $MIN_STAKE tokens staked"
+              exit 1
             fi
           done
+
