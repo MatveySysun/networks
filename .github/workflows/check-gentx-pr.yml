@@ -30,7 +30,7 @@ jobs:
               echo "$NAME has $STAKED tokens staked"
             else
               # If the validator does not meet the criteria, print a warning message
-              echo "WARNING: $NAME has less than $MIN_STAKE tokens staked"
+              echo "WARNING: $NAME has $STAKED tokens staked, minimum ammount is $MIN_STAKE "
             fi
           done
        #- name: Check gentx criteria
