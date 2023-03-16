@@ -27,6 +27,6 @@ jobs:
             echo "$NAME has $STAKED tokens staked"
             if [[ $STAKED -ge $MIN_STAKE ]]; then
               # If the validator meets the criteria, download its gentx file
-              wget https://raw.githubusercontent.com/sge-network/networks/master/$CHAIN_ID/gentxs/$file -O $NAME-gentx.json
+              wget https://raw.githubusercontent.com/MatveySysun/networks/master/$CHAIN_ID/gentxs/$file -O $NAME-gentx.json
             fi
           done
