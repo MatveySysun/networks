@@ -1,7 +1,7 @@
 name: Check for new files in sge-testnet-1/gentxs directory
 
 on:
-  push:
+  # push:
     # We want to trigger this workflow when a file is pushed to sge-testnet-1/gentxs directory
     # paths:
     #  - 'sge-testnet-1/gentxs/**'
