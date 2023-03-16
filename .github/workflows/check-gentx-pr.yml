@@ -3,8 +3,8 @@ name: Check for new files in sge-testnet-1/gentxs directory
 on:
   push:
     # We want to trigger this workflow when a file is pushed to sge-testnet-1/gentxs directory
-    paths:
-      - 'sge-testnet-1/gentxs/**'
+    # paths:
+    #  - 'sge-testnet-1/gentxs/**'
   pull_request:
     # We also want to trigger this workflow when a pull request is opened with changes to the sge-testnet-1/gentxs directory
     paths:
@@ -14,8 +14,10 @@ jobs:
   check-gentxs-directory:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout PR branch
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
       - name: Check gentxs directory
         run: |
           for file in sge-testnet-1/gentxs/*.json; do
@@ -23,7 +25,8 @@ jobs:
             STAKED=$(jq -r '.body.messages[0].value.amount' "$file")
             # Perform checks on $NAME and $STAKED here
             echo "$NAME has $STAKED tokens staked"
+            if [[ $STAKED -ge $MIN_STAKE ]]; then
+              # If the validator meets the criteria, download its gentx file
+              wget https://raw.githubusercontent.com/sge-network/networks/master/$CHAIN_ID/gentxs/$file -O $NAME-gentx.json
+            fi
           done
-
-
-          
