@@ -1,0 +1,18 @@
+name: Gentx
+#on: [pull_request]
+on: [push]
+jobs:
+  validate-gentx:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.18'
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Display go version
+        run: go version
+      - name: validate-gentx
+        run: |
+          bash -x .validate-gentx.sh
