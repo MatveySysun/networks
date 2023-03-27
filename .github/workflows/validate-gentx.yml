@@ -15,4 +15,4 @@ jobs:
         run: go version
       - name: validate-gentx
         run: |
-          bash -x .validate-gentx.sh
+          bash -x validate-gentx.sh
