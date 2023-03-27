@@ -8,7 +8,7 @@ CHAIN_ID=sge-network-2
 DENOM=usge
 VALIDATOR_COINS=10000000000$DENOM
 MAXBOND=9000000000
-GENTX_FILE=$(find ./$CHAIN_ID/gentx -iname "*.json")
+GENTX_FILE=$(find ./$CHAIN_ID/gentxs -iname "*.json")
 LEN_GENTX=$(echo ${#GENTX_FILE})
 SGED_TAG="v0.0.5"
 
