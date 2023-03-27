@@ -7,7 +7,6 @@ RANDOM_KEY="randomsgedvalidatorkey"
 CHAIN_ID=sge-network-2
 DENOM=usge
 VALIDATOR_COINS=10000000000$DENOM
-MAXBOND=9000000000
 GENTX_FILE=$(find ./$CHAIN_ID/gentxs -iname "*.json")
 LEN_GENTX=$(echo ${#GENTX_FILE})
 SGED_TAG="v0.0.5"
@@ -110,9 +109,9 @@ else
                 exit 1
             fi
 
-            # limit the amount that can be bonded
-            if [ $amountquery -gt $MAXBOND ]; then
-                echo "bonded too much: $amountquery > $MAXBOND"
+            # check the amount that can be bonded
+            if [ $amountquery != $VALIDATOR_COINS ]; then
+                echo "invalid amount of tokens"
                 exit 1
             fi
 
