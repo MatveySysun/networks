@@ -53,24 +53,24 @@ else
     echo $GENTX_FILE
 
 
-    if command_exists go ; then
-        echo "Golang is already installed"
-    else
+    # if command_exists go ; then
+    #     echo "Golang is already installed"
+    # else
 
-    sudo apt install -y git gcc make
+    # sudo apt install -y git gcc make
 
-    sudo nano $HOME/.profile
-    # Add the following two lines at the end of the file
-    GOPATH=$HOME/go
-    PATH=$GOPATH/bin:$PATH
-    # Save the file and exit the editor
-    source $HOME/.profile
-    # Now you should be able to see your variables like this:
-    echo $GOPATH/home/ubuntu/go
-    echo $PATH/home/ubuntu/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+    # sudo nano $HOME/.profile
+    # # Add the following two lines at the end of the file
+    # GOPATH=$HOME/go
+    # PATH=$GOPATH/bin:$PATH
+    # # Save the file and exit the editor
+    # source $HOME/.profile
+    # # Now you should be able to see your variables like this:
+    # echo $GOPATH/home/ubuntu/go
+    # echo $PATH/home/ubuntu/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 
-    go version
-    fi
+    # go version
+    # fi
     
 
     echo "...........Init Sged.............."
@@ -83,9 +83,9 @@ else
     make install
     #chmod +x /usr/bin/sged
 
-    ./bin/sged keys add $RANDOM_KEY --keyring-backend test --home $SGED_HOME
+    sged keys add $RANDOM_KEY --keyring-backend test --home $SGED_HOME
 
-    ./bin/sged init --chain-id $CHAIN_ID validator --home $SGED_HOME
+    sged init --chain-id $CHAIN_ID validator --home $SGED_HOME
 
     echo "..........Fetching genesis......."
     rm -rf $SGED_HOME/config/genesis.json
@@ -116,7 +116,7 @@ else
                 exit 1
             fi
 
-            ./bin/sged add-genesis-account $(jq -r '.body.messages[0].delegator_address' $line) $VALIDATOR_COINS --home $SGED_HOME
+            sged add-genesis-account $(jq -r '.body.messages[0].delegator_address' $line) $VALIDATOR_COINS --home $SGED_HOME
         done
 
     mkdir -p $SGED_HOME/config/gentx/
@@ -125,20 +125,20 @@ else
     cp -r ../$CHAIN_ID/gentx/* $SGED_HOME/config/gentx/
 
     echo "..........Collecting gentxs......."
-    ./bin/sged collect-gentxs --home $SGED_HOME &> log.txt
+    sged collect-gentxs --home $SGED_HOME &> log.txt
     sed -i '/persistent_peers =/c\persistent_peers = ""' $SGED_HOME/config/config.toml
     sed -i '/minimum-gas-prices =/c\minimum-gas-prices = "0.25usge"' $SGED_HOME/config/app.toml
 
-    ./bin/sged validate-genesis --home $SGED_HOME
+    sged validate-genesis --home $SGED_HOME
 
     echo "..........Starting node......."
-    ./bin/sged start --home $SGED_HOME &
+    sged start --home $SGED_HOME &
 
     sleep 90s
 
     echo "...checking network status.."
 
-    ./bin/sged status --node http://localhost:26657
+    sged status --node http://localhost:26657
 
     echo "...Cleaning the stuff..."
     killall sged >/dev/null 2>&1
