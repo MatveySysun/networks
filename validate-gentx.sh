@@ -115,7 +115,7 @@ else
                 exit 1
             fi
 
-            sged add-genesis-account $(jq -r '.body.messages[0].delegator_address' $line) $VALIDATOR_COINS --home $SGED_HOME
+            sged add-genesis-account $(jq -r '.body.messages[0].delegator_address' $line) $VALIDATOR_COINS$DENOM --home $SGED_HOME
         done
 
     mkdir -p $SGED_HOME/config/gentx/
