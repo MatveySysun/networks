@@ -122,7 +122,7 @@ else
     mkdir -p $SGED_HOME/config/gentx/
 
     # add submitted gentxs
-    cp -r ../$CHAIN_ID/gentx/* $SGED_HOME/config/gentx/
+    cp -r ../$CHAIN_ID/gentxs/* $SGED_HOME/config/gentx/
 
     echo "..........Collecting gentxs......."
     sged collect-gentxs --home $SGED_HOME &> log.txt
