@@ -1,6 +1,5 @@
 name: Gentx
-#on: [pull_request]
-on: [push]
+on: [push, pull_request]
 jobs:
   validate-gentx:
     runs-on: ubuntu-latest
@@ -13,6 +12,6 @@ jobs:
         uses: actions/checkout@v2
       - name: Display go version
         run: go version
-      - name: validate-gentx
+      - name: Validate-gentx
         run: |
           bash -x validate-gentx.sh
