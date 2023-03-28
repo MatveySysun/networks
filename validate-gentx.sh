@@ -133,9 +133,9 @@ else
     echo "..........Starting node......."
     sged start --home $SGED_HOME &
 
-    sleep 90s
+    sleep 10s
 
-    echo "...checking network status.."
+    echo "...Сhecking network status.."
 
     sged status --node http://localhost:26657
 
