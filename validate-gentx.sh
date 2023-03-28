@@ -125,8 +125,8 @@ else
 
     echo "..........Collecting gentxs......."
     sged collect-gentxs --home $SGED_HOME &> log.txt
-    #sed -i '/persistent_peers =/c\persistent_peers = ""' $SGED_HOME/config/config.toml
-    #sed -i '/minimum-gas-prices =/c\minimum-gas-prices = "0.25usge"' $SGED_HOME/config/app.toml
+    sed -i '/persistent_peers =/c\persistent_peers = ""' $SGED_HOME/config/config.toml
+    sed -i '/minimum-gas-prices =/c\minimum-gas-prices = "0.25usge"' $SGED_HOME/config/app.toml
 
     sged validate-genesis --home $SGED_HOME
 
