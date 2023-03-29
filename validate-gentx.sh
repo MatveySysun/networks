@@ -51,48 +51,6 @@ else
     echo "GentxFiles::::"
     echo $GENTX_FILE
 
-
-    # if command_exists go ; then
-    #     echo "Golang is already installed"
-    # else
-
-    # sudo apt install -y git gcc make
-
-    # sudo nano $HOME/.profile
-    # # Add the following two lines at the end of the file
-    # GOPATH=$HOME/go
-    # PATH=$GOPATH/bin:$PATH
-    # # Save the file and exit the editor
-    # source $HOME/.profile
-    # # Now you should be able to see your variables like this:
-    # echo $GOPATH/home/ubuntu/go
-    # echo $PATH/home/ubuntu/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
-
-    # go version
-    # fi
-    
-
-    echo "...........Init Sged.............."
-
-    git clone https://github.com/sge-network/sge
-    cd sge
-    git fetch --tags
-    git checkout $SGED_TAG
-    go mod tidy
-    make install
-    #chmod +x /usr/bin/sged
-
-    sged keys add $RANDOM_KEY --keyring-backend test --home $SGED_HOME
-
-    sged init --chain-id $CHAIN_ID validator --home $SGED_HOME
-
-    echo "..........Fetching genesis......."
-    rm -rf $SGED_HOME/config/genesis.json
-    cp ../$CHAIN_ID/pre-genesis.json $SGED_HOME/config/genesis.json
-
-    # this genesis time is different from original genesis time, just for validating gentx.
-    sed -i '/genesis_time/c\   \"genesis_time\" : \"2021-09-02T16:00:00Z\",' $SGED_HOME/config/genesis.json
-
     find ../$CHAIN_ID/gentxs -iname "*.json" -print0 |
         while IFS= read -r -d '' line; do
             GENACC=$(cat $line | sed -n 's|.*"delegator_address":"\([^"]*\)".*|\1|p')
@@ -114,9 +72,30 @@ else
                 echo "invalid amount of tokens"
                 exit 1
             fi
-
-            sged add-genesis-account $(jq -r '.body.messages[0].delegator_address' $line) $VALIDATOR_COINS$DENOM --home $SGED_HOME
         done
+
+
+    echo "...........Init Sged.............."
+
+    git clone https://github.com/sge-network/sge
+    cd sge
+    git fetch --tags
+    git checkout $SGED_TAG
+    go mod tidy
+    make install
+
+    sged keys add $RANDOM_KEY --keyring-backend test --home $SGED_HOME
+
+    sged init --chain-id $CHAIN_ID validator --home $SGED_HOME
+
+    echo "..........Fetching genesis......."
+    rm -rf $SGED_HOME/config/genesis.json
+    cp ../$CHAIN_ID/pre-genesis.json $SGED_HOME/config/genesis.json
+
+    # this genesis time is different from original genesis time, just for validating gentx.
+    sed -i '/genesis_time/c\   \"genesis_time\" : \"2021-09-02T16:00:00Z\",' $SGED_HOME/config/genesis.json
+
+    sged add-genesis-account $(jq -r '.body.messages[0].delegator_address' $line) $VALIDATOR_COINS$DENOM --home $SGED_HOME
 
     mkdir -p $SGED_HOME/config/gentx/
 
