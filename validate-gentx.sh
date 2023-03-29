@@ -50,6 +50,27 @@ else
 
     echo "GentxFiles::::"
     echo $GENTX_FILE
+  
+
+    echo "...........Init Sged.............."
+
+    git clone https://github.com/sge-network/sge
+    cd sge
+    git fetch --tags
+    git checkout $SGED_TAG
+    go mod tidy
+    make install
+
+    sged keys add $RANDOM_KEY --keyring-backend test --home $SGED_HOME
+
+    sged init --chain-id $CHAIN_ID validator --home $SGED_HOME
+
+    echo "..........Fetching genesis......."
+    rm -rf $SGED_HOME/config/genesis.json
+    cp ../$CHAIN_ID/pre-genesis.json $SGED_HOME/config/genesis.json
+
+    # this genesis time is different from original genesis time, just for validating gentx.
+    sed -i '/genesis_time/c\   \"genesis_time\" : \"2021-09-02T16:00:00Z\",' $SGED_HOME/config/genesis.json
 
     find ../$CHAIN_ID/gentxs -iname "*.json" -print0 |
         while IFS= read -r -d '' line; do
@@ -72,30 +93,9 @@ else
                 echo "invalid amount of tokens"
                 exit 1
             fi
+
+            sged add-genesis-account $(jq -r '.body.messages[0].delegator_address' $line) $VALIDATOR_COINS$DENOM --home $SGED_HOME
         done
-
-
-    echo "...........Init Sged.............."
-
-    git clone https://github.com/sge-network/sge
-    cd sge
-    git fetch --tags
-    git checkout $SGED_TAG
-    go mod tidy
-    make install
-
-    sged keys add $RANDOM_KEY --keyring-backend test --home $SGED_HOME
-
-    sged init --chain-id $CHAIN_ID validator --home $SGED_HOME
-
-    echo "..........Fetching genesis......."
-    rm -rf $SGED_HOME/config/genesis.json
-    cp ../$CHAIN_ID/pre-genesis.json $SGED_HOME/config/genesis.json
-
-    # this genesis time is different from original genesis time, just for validating gentx.
-    sed -i '/genesis_time/c\   \"genesis_time\" : \"2021-09-02T16:00:00Z\",' $SGED_HOME/config/genesis.json
-
-    sged add-genesis-account $(jq -r '.body.messages[0].delegator_address' $line) $VALIDATOR_COINS$DENOM --home $SGED_HOME
 
     mkdir -p $SGED_HOME/config/gentx/
 
